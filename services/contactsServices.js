@@ -7,7 +7,7 @@ import { dirname } from 'path';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-const contactsPath = path.join(__dirname, 'db', 'contacts.json');
+const contactsPath = path.join(__dirname, '..', 'db', 'contacts.json');
 
 async function listContacts() {
   try {
