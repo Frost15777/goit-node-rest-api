@@ -12,6 +12,18 @@ app.use(express.json());
 
 app.use("/api/contacts", contactsRouter);
 
+const checkRequestBody = (req, res, next) => {
+  if (req.method === "PUT" || req.method === "PATCH") {
+    const data = req.body;
+    if (!data || Object.keys(data).length === 0) {
+      return res.status(400).json({ message: "Body must have at least one field" });
+    }
+  }
+  next();
+};
+
+app.use(checkRequestBody);
+
 app.use((_, res) => {
   res.status(404).json({ message: "Route not found" });
 });
