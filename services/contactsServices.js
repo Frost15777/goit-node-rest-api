@@ -1,6 +1,12 @@
 import Contact from "../models/contact.js";
 
-export const listContacts = () => Contact.find({}, "-createdAt - updatedAt");
+export const listContacts = async () => {
+    const result = await Contact.find({}, "-createdAt -updatedAt");
+    if (result === null) {
+        throw new Error("Cannot do exclusion on field createdAt in inclusion projection");
+    }
+    return result;
+};
 
 export const getContactByID = async (id) => {
     const data = await Contact.findById(id);

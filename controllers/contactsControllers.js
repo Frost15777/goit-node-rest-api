@@ -10,27 +10,30 @@ const createContact = async (req, res) => {
 };
 
 const getAllContacts = async (req, res) => {
-    const result = await contactsServices.listContacts()
+    const result = await contactsServices.listContacts();
+    if (!result) {
+        return res.status(500).json({ message: "Cannot do exclusion on field createdAt in inclusion projection" });
+    }
 
     res.json(result);
 };
 
 const getOneContact = async (req, res) => {
-        const { id } = req.params;
-        const result = await contactsServices.getContactById(id);
-        if (!result) {
-            throw HttpError(404, `Contact with id=${id} not found`);
-        } 
+    const { id } = req.params;
+    const result = await contactsServices.getContactById(id);
+    if (!result) {
+        return res.status(404).json({ message: `Contact with id=${id} not found` });
+    } 
 
-        res.json(result);
+    res.json(result);
 };
 
 const deleteContact = async (req, res) => {
-        const { id } = req.params;
-        const result = await contactsServices.removeContact(id);
-        if (!result) {
-            throw HttpError(404, `Contact with id=${id} not found`);
-        }
+    const { id } = req.params;
+    const result = await contactsServices.removeContact(id);
+    if (!result) {
+        return res.status(404).json({ message: `Contact with id=${id} not found` });
+    }
     
     res.json({
         message: "Delete success"
@@ -38,17 +41,28 @@ const deleteContact = async (req, res) => {
 };
 
 const updateContact = async (req, res) => {
-        const { id } = req.params;
-        const { result } = await contactsServices.updateContact(id, req.body);
-        if (!result) {
-            throw HttpError(404, `Contact with id=${id} not found`);
-        }
+    const { id } = req.params;
+    const contact = await contactsServices.getContactById(id);
+    if (!contact) {
+        throw HttpError(404, `Contact with id=${id} not found`);
+    }
+
+    const { result } = await contactsServices.updateContact(id, req.body);
+    if (!result) {
+        throw HttpError(404, `Contact with id=${id} not found`);
+    }
+
+    res.json(result);
 };
 
 const updateStatusContact = async (req, res) => {
     const { id } = req.params;
-    const { result } = await contactsServices.updateStatusContact(id, favorite);
+    const { favorite } = req.body;
+    if (favorite === undefined) {
+        return res.status(400).json({ message: "Favorite is not defined" });
+    }
 
+    const { result } = await contactsServices.updateStatusContact(id, favorite);
     if (!result) {
         throw HttpError(404, `Contact with id=${id} not found`);
     }
