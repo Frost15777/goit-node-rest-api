@@ -1,22 +1,28 @@
 import Contact from "../models/contact.js";
 
-export const listContacts = async () => {
-    const result = await Contact.find({}, "-createdAt -updatedAt");
-    if (result === null) {
-        throw new Error("Cannot do exclusion on field createdAt in inclusion projection");
-    }
-    return result;
-};
+export const listContacts = () => Contact.find({}, { createdAt: 0, updatedAt: 0 });
 
 export const getContactByID = async (id) => {
     const data = await Contact.findById(id);
     return data;
 }
 
-export const deleteContact = id => Contact.findByIdAndDelete(id);
+export const deleteContact = async (id) => {
+    const result = await Contact.findByIdAndDelete(id);
+    return result;
+}
 
-export const addContact = data => Contact.create(data);
+export const addContact = async (data) => {
+    const result = await Contact.create(data);
+    return result;
+}
 
-export const updateContact = (id, data) => Contact.findByIdAndUpdate(id, data);
+export const updateContact = async (id, data) => {
+    const result = await Contact.findByIdAndUpdate(id, data, { new: true });
+    return result;
+}
 
-export const updateStatusContact = (id, favourite) => Contact.findByIdAndUpdate(id, favourite);
+export const updateStatusContact = async (id, favorite) => {
+    const result = await Contact.findByIdAndUpdate(id, { favorite }, { new: true });
+    return result;
+}
