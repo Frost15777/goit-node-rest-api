@@ -16,7 +16,7 @@ const getOneContact = async (req, res) => {
     const { id } = req.params;
     const result = await contactsServices.getContactByID(id);
     if (!result) {
-        throw new HttpError(404, `Contact with id=${id} not found`);
+        throw HttpError(404, `Contact with id=${id} not found`);
     }
     res.json(result);
 };
@@ -25,26 +25,31 @@ const deleteContact = async (req, res) => {
     const { id } = req.params;
     const result = await contactsServices.deleteContact(id);
     if (!result) {
-        throw new HttpError(404, `Contact with id=${id} not found`);
+        throw HttpError(404, `Contact with id=${id} not found`);
     }
     res.json({ message: "Delete success" });
 };
 
 const updateContact = async (req, res) => {
     const { id } = req.params;
+    const { body } = req;
+    if (Object.keys(body).length === 0) {
+        throw HttpError(400, "Request body cannot be empty");
+    }
+
     const result = await contactsServices.updateContact(id, req.body);
     if (!result) {
-        throw new HttpError(404, `Contact with id=${id} not found`);
+        throw HttpError(404, `Contact with id=${id} not found`);
     }
     res.json(result);
 };
 
 const updateStatusContact = async (req, res) => {
     const { id } = req.params;
-    const { favorite } = req.body; // Отримуємо значення favorite з запиту
+    const { favorite } = req.body;
     const result = await contactsServices.updateStatusContact(id, favorite);
     if (!result) {
-        throw new HttpError(404, `Contact with id=${id} not found`);
+        throw HttpError(404, `Contact with id=${id} not found`);
     }
     res.json(result);
 };
