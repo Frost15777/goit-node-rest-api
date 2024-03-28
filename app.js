@@ -46,3 +46,4 @@ mongoose.connect(process.env.DB_HOST)
     console.error(error.message);
     process.exit(1);
   })
+  
